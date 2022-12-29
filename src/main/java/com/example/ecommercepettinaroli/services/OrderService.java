@@ -6,6 +6,7 @@ import com.example.ecommercepettinaroli.models.Product;
 import com.example.ecommercepettinaroli.repositories.OrderProductRepository;
 import com.example.ecommercepettinaroli.repositories.OrderRepository;
 import com.example.ecommercepettinaroli.repositories.ProductRepository;
+import com.example.ecommercepettinaroli.repositories.ReceiptRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,8 @@ import java.util.Optional;
 @Transactional
 public class OrderService implements Serializable {
 
+    private ReceiptRepository receiptRepository;
+
     private OrderRepository orderRepository;
 
     private ProductRepository productRepository;
@@ -28,11 +31,15 @@ public class OrderService implements Serializable {
     private OrderProductRepository orderProductRepository;
 
     @Autowired
-    public OrderService(OrderRepository orderRepository, ProductRepository productRepository, OrderProductRepository orderProductRepository) {
+    public OrderService(ReceiptRepository receiptRepository, OrderRepository orderRepository, ProductRepository productRepository, OrderProductRepository orderProductRepository) {
+        this.receiptRepository = receiptRepository;
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
         this.orderProductRepository = orderProductRepository;
     }
+
+
+
 
     public Optional<Order> getOrder(Long id) {
         return orderRepository.findById(id);
@@ -50,35 +57,36 @@ public class OrderService implements Serializable {
         try {
             Optional<Order> order = orderRepository.findById(orderId);
             Optional<Product> prd = productRepository.findById(prdId);
-            if(prd.isPresent() && stockCheck(prdId)) {
-                if(quantity >= getStock(prdId)) {
+            if(prd.isPresent() && quantity >= getStock(prdId)) {
                     if(order.isPresent()) {
                         OrderProduct newLine = new OrderProduct(quantity, order.get(), prd.get());
                         order.get().getOrderProducts().add(newLine);
+                        orderProductRepository.save(newLine);
                         return ResponseEntity.ok(order);
                     } else {
                         Order newOrder = new Order();
                         OrderProduct newLine = new OrderProduct(quantity, newOrder, prd.get());
                         newOrder.getOrderProducts().add(newLine);
+                        orderProductRepository.save(newLine);
+                        orderRepository.save(newOrder);
                         return ResponseEntity.ok(newOrder);
                     }
                 } else {
-                    return new ResponseEntity<>("No se encontró el producto solicitado", HttpStatus.NOT_FOUND);
+                    return new ResponseEntity<>("No hay stock suficiente del producto seleccionado", HttpStatus.NOT_FOUND);
                 }
-            } else {
-                return new ResponseEntity<>("No hay suficiente stock del producto solicitado", HttpStatus.CONFLICT);
-            }
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getStackTrace());
         }
     }
 
-    private Boolean stockCheck(Long id) {
-        return productRepository.findById(id).get().getQuantity() > 0;
-    }
-
     private Integer getStock(Long id) {
-        return productRepository.findById(id).get().getQuantity();
+        Optional<Product> prd = productRepository.findById(id) ;
+        if(prd.isPresent()) {
+            return prd.get().getQuantity();
+        } else {
+            return 0;
+        }
+
     }
 
     private Double calculateTotal(Long id) {

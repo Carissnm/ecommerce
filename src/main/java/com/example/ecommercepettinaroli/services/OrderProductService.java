@@ -1,5 +1,6 @@
 package com.example.ecommercepettinaroli.services;
 
+import com.example.ecommercepettinaroli.models.OrderProduct;
 import com.example.ecommercepettinaroli.repositories.OrderProductRepository;
 import com.example.ecommercepettinaroli.repositories.OrderRepository;
 import com.example.ecommercepettinaroli.repositories.ProductRepository;
@@ -21,4 +22,9 @@ public class OrderProductService {
         this.productRepository = productRepository;
         this.repository = repository;
     }
+
+    public OrderProduct saveOrUpdate(OrderProduct op) {
+        return repository.save(op);
+    }
+
 }

@@ -19,6 +19,9 @@ public class Order {
     @Column(name = "FECHA")
     private LocalDate dateCreated;
 
+    @Column(name = "ESTADO")
+    private OrderStatus orderStatus;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "id")
     private List<OrderProduct> orderProducts = new ArrayList<>();
@@ -33,6 +36,7 @@ public class Order {
     public Order(LocalDate dateCreated, Client client) {
         this.dateCreated = dateCreated;
         this.client = client;
+        this.orderStatus = OrderStatus.PENDIENTE;
         this.orderProducts = new ArrayList<>();
     }
 
