@@ -49,29 +49,12 @@ public class OrderController {
         }
     }
 
-    @PostMapping(value = "/crear-item")
-    public ResponseEntity<?> createLine(@RequestBody OrderProductDTO orderProductDTO) {
-        try {
-            OrderProduct newLine = orderService.createLine(orderProductDTO);
-            return ResponseEntity.ok(newLine);
-        } catch ( Exception e ) {
-            return ResponseEntity.internalServerError().body(e.getStackTrace());
-        }
-    }
 
-    @PutMapping(value = "/agregar-item/{id}")
+    @PutMapping(value = "/agregar-item")
     public ResponseEntity<?> addItem(@RequestBody OrderProductDTO orderProductDTO) {
         try {
-            Optional<Order> order = orderService.getOrder(orderProductDTO.getOrderId());
-            OrderProduct line = orderService.createLine(orderProductDTO);
-            if(order.isPresent()) {
-                orderService.addLine(order.get(), line);
-                return ResponseEntity.ok(order);
-            } else {
-                Order newOrder = new Order(LocalDate.now(), orderProductDTO.getClient());
-                orderService.addLine(newOrder, line);
-                return ResponseEntity.ok(newOrder);
-            }
+            Order order = orderService.createLine(orderProductDTO);
+            return ResponseEntity.ok(order);
       } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getStackTrace());
         }

@@ -55,22 +55,23 @@ public class OrderService implements Serializable {
         return orderRepository.save(order);
     }
 
-    public OrderProduct createLine(OrderProductDTO orderProductDTO) {
+    public Order createLine(OrderProductDTO orderProductDTO) {
         Optional<Product> product = productRepository.findById(orderProductDTO.getPrdId());
         Optional<Order> order = orderRepository.findById(orderProductDTO.getOrderId());
-        if(product.isPresent() && orderProductDTO.getQuantity() <= getStock(product.get().getPrdId()) && order.isPresent()) {
-            OrderProduct line = new OrderProduct(orderProductDTO.getQuantity(), order.get(), product.get());
-            line.setLineTotal(partialTotal(line));
-            return orderProductRepository.save(line);
-        } else {
-            OrderProduct emptyOrder = new OrderProduct();
-            return emptyOrder;
+        if(product.isPresent() && orderProductDTO.getQuantity() <= getStock(product.get().getPrdId())) {
+            if(order.isPresent()){
+                OrderProduct line = new OrderProduct(orderProductDTO.getQuantity(), order.get(), product.get());
+                line.setLineTotal(partialTotal(line));
+                orderProductRepository.save(line);
+                Order orderToSave = order.get();
+                List<OrderProduct> listToUpdate = orderToSave.getOrderProducts();
+                listToUpdate.add(line);
+                orderToSave.setOrderProducts(listToUpdate);
+                System.out.println(orderToSave.getOrderProducts());
+                return orderRepository.save(orderToSave);
+            }
         }
-    }
-
-    public void addLine(Order order, OrderProduct line) {
-        order.getOrderProducts().add(line);
-        orderRepository.save(order);
+        return null;
     }
 
 

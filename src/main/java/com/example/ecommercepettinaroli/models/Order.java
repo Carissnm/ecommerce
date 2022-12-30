@@ -31,7 +31,7 @@ public class Order {
     private List<OrderProduct> orderProducts = new ArrayList<>();
 
     @JsonBackReference
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "CL_ID")
     private Client client;
 
