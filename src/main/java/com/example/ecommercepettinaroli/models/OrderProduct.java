@@ -19,9 +19,12 @@ public class OrderProduct {
     private Double lineTotal;
 
     //Constructor default
+
+
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "ORDER_ID")
     private Order order;
+
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "PRD_ID")

@@ -40,6 +40,14 @@ public class Order {
         this.orderProducts = new ArrayList<>();
     }
 
+    public Long getOrderId() {
+        return orderId;
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
     public Client getClient() {
         return client;
     }

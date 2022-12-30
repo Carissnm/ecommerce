@@ -95,10 +95,10 @@ public class ProductController {
             Optional<Product> prdUpdate = productService.findProductById(id);
             if(prdUpdate.isPresent()) {
                 Product updatePrd = prdUpdate.get();
-                updatePrd.setPrdCode(prdUpdate.get().getPrdCode());
-                updatePrd.setPrdDescription(prdUpdate.get().getPrdDescription());
-                updatePrd.setQuantity(prdUpdate.get().getQuantity());
-                updatePrd.setPrdPrice(prdUpdate.get().getPrdPrice());
+                updatePrd.setPrdCode(product.getPrdCode());
+                updatePrd.setPrdDescription(product.getPrdDescription());
+                updatePrd.setQuantity(product.getQuantity());
+                updatePrd.setPrdPrice(product.getPrdPrice());
 
                 return new ResponseEntity<>(productService.saveOrUpdate(updatePrd), HttpStatus.OK);
             } else {
