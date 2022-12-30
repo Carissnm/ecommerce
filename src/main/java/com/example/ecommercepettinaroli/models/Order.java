@@ -38,6 +38,7 @@ public class Order {
     public Order() {
     }
 
+
     public Order(LocalDate dateCreated, Client client) {
         this.dateCreated = dateCreated;
         this.client = client;

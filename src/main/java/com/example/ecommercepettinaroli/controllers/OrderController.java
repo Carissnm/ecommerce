@@ -4,6 +4,7 @@ import com.example.ecommercepettinaroli.models.Client;
 import com.example.ecommercepettinaroli.models.Order;
 import com.example.ecommercepettinaroli.models.OrderProduct;
 import com.example.ecommercepettinaroli.models.OrderProductDTO;
+import com.example.ecommercepettinaroli.services.OrderProductService;
 import com.example.ecommercepettinaroli.services.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<?> getOrder(@PathVariable(name = "id") Long id) {
@@ -47,21 +49,28 @@ public class OrderController {
         }
     }
 
-    @PostMapping(value = "/agregar-item/{id}")
-    public ResponseEntity<?> addItem(@PathVariable(name = "id") Long id , @RequestBody OrderProductDTO orderProductDTO) {
+    @PostMapping(value = "/crear-item")
+    public ResponseEntity<?> createLine(@RequestBody OrderProductDTO orderProductDTO) {
         try {
-            Optional<Order> order = orderService.getOrder(id);
+            OrderProduct newLine = orderService.createLine(orderProductDTO);
+            return ResponseEntity.ok(newLine);
+        } catch ( Exception e ) {
+            return ResponseEntity.internalServerError().body(e.getStackTrace());
+        }
+    }
+
+    @PutMapping(value = "/agregar-item/{id}")
+    public ResponseEntity<?> addItem(@RequestBody OrderProductDTO orderProductDTO) {
+        try {
+            Optional<Order> order = orderService.getOrder(orderProductDTO.getOrderId());
             OrderProduct line = orderService.createLine(orderProductDTO);
             if(order.isPresent()) {
-                System.out.println(order.get());
-                Order updatedOrder = order.get();
-                System.out.println(updatedOrder);
-                List<OrderProduct> updatedList = updatedOrder.getOrderProducts();
-                updatedList.add(line);
-                Order savedOrder = orderService.saveOrUpdate(updatedOrder);
-                return ResponseEntity.ok(savedOrder);
+                orderService.addLine(order.get(), line);
+                return ResponseEntity.ok(order);
             } else {
-                return new ResponseEntity<>("La orden de id " + id + " no existe", HttpStatus.NOT_FOUND);
+                Order newOrder = new Order(LocalDate.now(), orderProductDTO.getClient());
+                orderService.addLine(newOrder, line);
+                return ResponseEntity.ok(newOrder);
             }
       } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getStackTrace());

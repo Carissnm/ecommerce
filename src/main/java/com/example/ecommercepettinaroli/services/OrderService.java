@@ -68,14 +68,12 @@ public class OrderService implements Serializable {
         }
     }
 
-    public void addLine(Long orderId, Long lineId) {
-        Optional<Order> order = orderRepository.findById(orderId);
-        Optional<OrderProduct> line = orderProductRepository.findById(lineId);
-        if (order.isPresent() && line.isPresent()){
-            order.get().getOrderProducts().add(line.get());
-            orderRepository.save(order.get());
-        }
+    public void addLine(Order order, OrderProduct line) {
+        order.getOrderProducts().add(line);
+        orderRepository.save(order);
     }
+
+
 
     private Integer getStock(Long id) {
         Optional<Product> prd = productRepository.findById(id) ;
