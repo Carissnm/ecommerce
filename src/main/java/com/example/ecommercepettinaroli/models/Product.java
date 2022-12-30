@@ -28,6 +28,10 @@ public class Product {
         this.prdPrice = prdPrice;
     }
 
+    public Long getPrdId() {
+        return prdId;
+    }
+
     public Integer getPrdCode() {
         return prdCode;
     }

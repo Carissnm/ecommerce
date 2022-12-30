@@ -15,6 +15,9 @@ public class OrderProduct {
     @Column(name = "CANTIDAD")
     private Integer quantity;
 
+    @Column(name = "TOTAL_PARCIAL")
+    private Double lineTotal;
+
     //Constructor default
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "ORDER_ID")
@@ -24,11 +27,14 @@ public class OrderProduct {
     @JoinColumn(name = "PRD_ID")
     private Product product;
 
+
+
     public OrderProduct() {
     }
 
     public OrderProduct(Integer quantity, Order order, Product product) {
         this.quantity = quantity;
+        this.lineTotal = 0.00;
         this.order = order;
         this.product = product;
     }
@@ -39,6 +45,14 @@ public class OrderProduct {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Double getLineTotal() {
+        return lineTotal;
+    }
+
+    public void setLineTotal(Double lineTotal) {
+        this.lineTotal = lineTotal;
     }
 
     public Integer getQuantity() {

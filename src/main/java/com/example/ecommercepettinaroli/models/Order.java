@@ -23,7 +23,7 @@ public class Order {
     private OrderStatus orderStatus;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "id")
+    @OneToMany(mappedBy = "id", cascade=CascadeType.ALL)
     private List<OrderProduct> orderProducts = new ArrayList<>();
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)

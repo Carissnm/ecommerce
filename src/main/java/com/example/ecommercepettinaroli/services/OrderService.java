@@ -2,6 +2,7 @@ package com.example.ecommercepettinaroli.services;
 
 import com.example.ecommercepettinaroli.models.Order;
 import com.example.ecommercepettinaroli.models.OrderProduct;
+import com.example.ecommercepettinaroli.models.OrderProductDTO;
 import com.example.ecommercepettinaroli.models.Product;
 import com.example.ecommercepettinaroli.repositories.OrderProductRepository;
 import com.example.ecommercepettinaroli.repositories.OrderRepository;
@@ -53,29 +54,25 @@ public class OrderService implements Serializable {
         return orderRepository.save(order);
     }
 
-    public ResponseEntity<?> addLine(Long orderId, Long prdId, Integer quantity) {
-        try {
-            Optional<Order> order = orderRepository.findById(orderId);
-            Optional<Product> prd = productRepository.findById(prdId);
-            if(prd.isPresent() && quantity >= getStock(prdId)) {
-                    if(order.isPresent()) {
-                        OrderProduct newLine = new OrderProduct(quantity, order.get(), prd.get());
-                        order.get().getOrderProducts().add(newLine);
-                        orderProductRepository.save(newLine);
-                        return ResponseEntity.ok(order);
-                    } else {
-                        Order newOrder = new Order();
-                        OrderProduct newLine = new OrderProduct(quantity, newOrder, prd.get());
-                        newOrder.getOrderProducts().add(newLine);
-                        orderProductRepository.save(newLine);
-                        orderRepository.save(newOrder);
-                        return ResponseEntity.ok(newOrder);
-                    }
-                } else {
-                    return new ResponseEntity<>("No hay stock suficiente del producto seleccionado", HttpStatus.NOT_FOUND);
-                }
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(e.getStackTrace());
+    public OrderProduct createLine(OrderProductDTO orderProductDTO) {
+        Optional<Product> product = productRepository.findById(orderProductDTO.getPrdId());
+        Optional<Order> order = orderRepository.findById(orderProductDTO.getOrderId());
+        if(product.isPresent() && orderProductDTO.getQuantity() <= getStock(product.get().getPrdId()) && order.isPresent()) {
+            OrderProduct line = new OrderProduct(orderProductDTO.getQuantity(), order.get(), product.get());
+            line.setLineTotal(partialTotal(line));
+            return orderProductRepository.save(line);
+        } else {
+
+            return null;
+        }
+    }
+
+    public void addLine(Long orderId, Long lineId) {
+        Optional<Order> order = orderRepository.findById(orderId);
+        Optional<OrderProduct> line = orderProductRepository.findById(lineId);
+        if (order.isPresent() && line.isPresent()){
+            order.get().getOrderProducts().add(line.get());
+            orderRepository.save(order.get());
         }
     }
 
@@ -87,6 +84,10 @@ public class OrderService implements Serializable {
             return 0;
         }
 
+    }
+
+    private Double partialTotal(OrderProduct line) {
+        return line.getQuantity() * line.getProduct().getPrdPrice();
     }
 
     private Double calculateTotal(Long id) {
