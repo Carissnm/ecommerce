@@ -4,23 +4,24 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import org.aspectj.weaver.ast.Or;
 
 import java.io.Serializable;
 
 @Entity
 @Table(name = "ORDEN_PRODUCTO")
-public class OrderProduct implements Serializable {
+public class OrderProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
     private Long id;
 
     @Column(name = "CANTIDAD")
-    private Integer quantity;
+    private @NotNull Integer quantity;
 
     @Column(name = "TOTAL_PARCIAL")
-    private Double lineTotal;
+    private @NotNull Double lineTotal;
 
     //Constructor default
 
@@ -45,6 +46,8 @@ public class OrderProduct implements Serializable {
         this.order = order;
         this.product = product;
     }
+
+
 
     public Long getId() {
         return id;
@@ -84,5 +87,15 @@ public class OrderProduct implements Serializable {
 
     public void setProduct(Product product) {
         this.product = product;
+    }
+
+    @Override
+    public String toString() {
+        return "OrderProduct{" +
+                "id=" + id +
+                ", quantity=" + quantity +
+                ", lineTotal=" + lineTotal +
+                ", product=" + product +
+                '}';
     }
 }

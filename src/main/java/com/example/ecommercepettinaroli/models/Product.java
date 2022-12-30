@@ -1,6 +1,7 @@
 package com.example.ecommercepettinaroli.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "PRODUCTO")
@@ -10,13 +11,13 @@ public class Product {
     @Column(name = "PRD_ID")
     private Long prdId;
     @Column(name = "PRD_COD")
-    private Integer prdCode;
+    private @NotNull Integer prdCode;
     @Column(name = "PRD_DESCRP")
-    private String prdDescription;
+    private @NotNull String prdDescription;
     @Column(name = "PRD_CANTIDAD")
-    private Integer quantity;
+    private @NotNull Integer quantity;
     @Column(name = "PRD_PRECIO")
-    private Double prdPrice;
+    private @NotNull Double prdPrice;
 
     public Product() {
     }

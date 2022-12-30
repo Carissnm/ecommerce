@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
 
 import java.io.Serializable;
@@ -13,17 +14,17 @@ import java.util.List;
 
 @Entity
 @Table(name = "ORDEN")
-public class Order implements Serializable {
+public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ORDEN_ID")
     private Long orderId;
 
     @Column(name = "FECHA")
-    private LocalDate dateCreated;
+    private @NotNull LocalDate dateCreated;
 
     @Column(name = "ESTADO")
-    private OrderStatus orderStatus;
+    private @NotNull OrderStatus orderStatus;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "id", cascade=CascadeType.ALL)
@@ -43,6 +44,8 @@ public class Order implements Serializable {
         this.orderStatus = OrderStatus.PENDIENTE;
         this.orderProducts = new ArrayList<>();
     }
+
+
 
     public Long getOrderId() {
         return orderId;
@@ -83,7 +86,6 @@ public class Order implements Serializable {
                 "orderId=" + orderId +
                 ", dateCreated=" + dateCreated +
                 ", orderProducts=" + orderProducts +
-                ", client=" + client +
                 '}';
     }
 }

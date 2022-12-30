@@ -1,10 +1,12 @@
 package com.example.ecommercepettinaroli.models;
 
+import jakarta.validation.constraints.NotNull;
+
 public class OrderProductDTO {
 
-    private Integer quantity;
-    private Long orderId;
-    private Long prdId;
+    private  Integer quantity;
+    private  Long orderId;
+    private  Long prdId;
 
     private Client client;
 
@@ -45,5 +47,15 @@ public class OrderProductDTO {
 
     public void setPrdId(Long prdId) {
         this.prdId = prdId;
+    }
+
+    @Override
+    public String toString() {
+        return "OrderProductDTO{" +
+                "quantity=" + quantity +
+                ", orderId=" + orderId +
+                ", prdId=" + prdId +
+                ", client=" + client +
+                '}';
     }
 }

@@ -3,6 +3,7 @@ package com.example.ecommercepettinaroli.models;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
@@ -14,9 +15,9 @@ public class Receipt {
     @Column(name = "RECIBO_ID")
     private Long rcpId;
     @Column(name = "FECHA")
-    private LocalDate date;
+    private @NotNull LocalDate date;
     @Column(name = "TOTAL")
-    private Double total;
+    private @NotNull Double total;
     @JsonBackReference
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "CLIENTE_ID", columnDefinition = "integer(11)")

@@ -5,6 +5,7 @@ import com.example.ecommercepettinaroli.models.Order;
 import com.example.ecommercepettinaroli.models.OrderProduct;
 import com.example.ecommercepettinaroli.models.OrderProductDTO;
 import com.example.ecommercepettinaroli.services.OrderService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class OrderController {
                 return new ResponseEntity<>("Orden no encontrada", HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Ocurrió un error");
+            return ResponseEntity.internalServerError().body(e.getStackTrace());
         }
     }
 
@@ -42,27 +43,28 @@ public class OrderController {
             Order savedOrder = orderService.saveOrUpdate(newOrder);
             return ResponseEntity.ok(savedOrder);
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Ocurrió un error");
+            return ResponseEntity.internalServerError().body(e.getStackTrace());
         }
     }
 
-    @PutMapping(value = "/agregar-item/{id}")
+    @PostMapping(value = "/agregar-item/{id}")
     public ResponseEntity<?> addItem(@PathVariable(name = "id") Long id , @RequestBody OrderProductDTO orderProductDTO) {
         try {
-            Optional<Order> order = orderService.getOrder(orderProductDTO.getOrderId());
+            Optional<Order> order = orderService.getOrder(id);
             OrderProduct line = orderService.createLine(orderProductDTO);
             if(order.isPresent()) {
+                System.out.println(order.get());
                 Order updatedOrder = order.get();
+                System.out.println(updatedOrder);
                 List<OrderProduct> updatedList = updatedOrder.getOrderProducts();
                 updatedList.add(line);
-                updatedOrder.setOrderProducts(updatedList);
                 Order savedOrder = orderService.saveOrUpdate(updatedOrder);
                 return ResponseEntity.ok(savedOrder);
             } else {
                 return new ResponseEntity<>("La orden de id " + id + " no existe", HttpStatus.NOT_FOUND);
             }
       } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Ocurrió un error");
+            return ResponseEntity.internalServerError().body(e.getStackTrace());
         }
     }
 

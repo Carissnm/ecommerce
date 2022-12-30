@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,8 +63,8 @@ public class OrderService implements Serializable {
             line.setLineTotal(partialTotal(line));
             return orderProductRepository.save(line);
         } else {
-
-            return null;
+            OrderProduct emptyOrder = new OrderProduct();
+            return emptyOrder;
         }
     }
 

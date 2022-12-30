@@ -4,6 +4,8 @@ package com.example.ecommercepettinaroli.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.lang.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,11 +20,11 @@ public class Client {
     private Long clientId;
 
     @Column(name = "CL_NOMBRE", columnDefinition = "varchar(255)")
-    private String name;
+    private @NotNull String name;
     @Column(name = "CL_SURNAME", columnDefinition = "varchar(255)")
-    private String surname;
+    private @NotNull String surname;
     @Column(name = "CL_DNI", columnDefinition = "varchar(255)")
-    private String dni;
+    private @NotNull String dni;
 
     @JsonIgnore
     @JsonManagedReference
@@ -100,8 +102,6 @@ public class Client {
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", dni='" + dni + '\'' +
-                ", receipts=" + receipts +
-                ", orders=" + orders +
                 '}';
     }
 }
