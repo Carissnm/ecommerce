@@ -1,12 +1,16 @@
 package com.example.ecommercepettinaroli.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import org.aspectj.weaver.ast.Or;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "ORDEN_PRODUCTO")
-public class OrderProduct {
+public class OrderProduct implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
@@ -20,7 +24,7 @@ public class OrderProduct {
 
     //Constructor default
 
-
+    @JsonBackReference
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "ORDER_ID")
     private Order order;

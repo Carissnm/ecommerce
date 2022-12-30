@@ -1,16 +1,19 @@
 package com.example.ecommercepettinaroli.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.springframework.validation.annotation.Validated;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "ORDEN")
-public class Order {
+public class Order implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ORDEN_ID")
@@ -26,6 +29,7 @@ public class Order {
     @OneToMany(mappedBy = "id", cascade=CascadeType.ALL)
     private List<OrderProduct> orderProducts = new ArrayList<>();
 
+    @JsonBackReference
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "CL_ID")
     private Client client;

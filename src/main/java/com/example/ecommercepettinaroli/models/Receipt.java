@@ -1,5 +1,7 @@
 package com.example.ecommercepettinaroli.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -15,10 +17,11 @@ public class Receipt {
     private LocalDate date;
     @Column(name = "TOTAL")
     private Double total;
+    @JsonBackReference
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "CLIENTE_ID", columnDefinition = "integer(11)")
     private Client client;
-
+    @JsonManagedReference
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "ORDEN_ID", referencedColumnName = "ORDEN_ID")
     private Order order;

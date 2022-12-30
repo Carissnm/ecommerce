@@ -2,6 +2,7 @@ package com.example.ecommercepettinaroli.models;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -24,10 +25,12 @@ public class Client {
     private String dni;
 
     @JsonIgnore
+    @JsonManagedReference
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
     private List<Receipt> receipts;
 
     @JsonIgnore
+    @JsonManagedReference
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
     private List<Order> orders;
 
